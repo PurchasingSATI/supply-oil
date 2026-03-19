@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>แบบสำรวจผลกระทบตะวันออกกลาง — ATTG</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@400;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --ink:    #0f1f2e;
+  --steel:  #1e3a52;
+  --blue:   #1d5fa8;
+  --pale:   #eef4fb;
+  --border: #c8d8e8;
+  --muted:  #607080;
+  --paper:  #f7f9fc;
+  --red:    #b83232;
+  --green:  #1a6e3c;
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Sarabun', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100vh;
+  font-size: 16px; line-height: 1.6;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 10% 0%, rgba(29,95,168,.07) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 90% 100%, rgba(30,58,82,.06) 0%, transparent 60%);
+  pointer-events: none; z-index: 0;
+}
+.page { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; padding: 40px 20px 80px; }
+
+/* Header */
+.header {
+  background: var(--steel);
+  border-radius: 16px 16px 0 0;
+  padding: 36px 40px 30px;
+  color: white; position: relative; overflow: hidden;
+}
+.header::before {
+  content: ''; position: absolute; top: -80px; right: -60px;
+  width: 300px; height: 300px; border-radius: 50%;
+  background: rgba(255,255,255,.04);
+}
+.company-tag {
+  display: inline-block;
+  font-size: 11px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase;
+  background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2);
+  border-radius: 20px; padding: 5px 14px; color: rgba(255,255,255,.85);
+  margin-bottom: 14px; position: relative; z-index: 1;
+}
+.header h1 {
+  font-family: 'Noto Serif Thai', serif;
+  font-size: 21px; font-weight: 700; line-height: 1.55;
+  color: white; position: relative; z-index: 1; margin-bottom: 16px;
+}
+.header-meta { display: flex; flex-wrap: wrap; gap: 10px; position: relative; z-index: 1; }
+.meta-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; color: rgba(255,255,255,.75);
+  background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15);
+  border-radius: 8px; padding: 5px 12px;
+}
+.meta-chip.urgent { background: rgba(180,83,9,.25); border-color: rgba(251,191,36,.3); color: #fde68a; }
+.meta-chip .dot { width: 6px; height: 6px; border-radius: 50%; background: #fde68a; }
+
+/* Intro */
+.intro-bar {
+  background: white; border-left: 4px solid var(--blue);
+  padding: 16px 24px; font-size: 14.5px; line-height: 1.85;
+  color: var(--muted); border-bottom: 1px solid var(--border);
+}
+.intro-bar strong { color: var(--ink); }
+
+/* Note */
+.note-bar {
+  background: #fffbe6; border-left: 4px solid #f59e0b;
+  padding: 12px 24px; font-size: 13.5px; line-height: 1.8;
+  color: #7a5a00; border-bottom: 1px solid var(--border);
+}
+
+/* Cards */
+.card { background: white; border-bottom: 1px solid var(--border); padding: 28px 40px; }
+.section-label { display: flex; align-items: center; gap: 10px; margin-bottom: 22px; }
+.section-num {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--steel); color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; flex-shrink: 0;
+}
+.section-title {
+  font-family: 'Noto Serif Thai', serif;
+  font-size: 15px; font-weight: 700; color: var(--steel);
+  padding-bottom: 8px; border-bottom: 2px solid var(--pale); flex: 1;
+}
+
+/* Inputs */
+.field { margin-bottom: 20px; }
+.field label { display: block; font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 7px; }
+.req { color: var(--red); }
+.field input[type="text"], .field input[type="email"], .field input[type="tel"] {
+  width: 100%; border: 1.5px solid var(--border); border-radius: 9px;
+  padding: 11px 14px; font-size: 15px; font-family: 'Sarabun', sans-serif;
+  color: var(--ink); background: white; outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+.field input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(29,95,168,.1); }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+/* Question rows */
+.q-row {
+  border: 1.5px solid var(--border); border-radius: 12px;
+  padding: 18px 20px; margin-bottom: 14px; transition: border-color .2s;
+}
+.q-row:last-child { margin-bottom: 0; }
+.q-row:hover { border-color: #a0bcd8; }
+.q-text { font-size: 15px; font-weight: 500; line-height: 1.7; color: var(--ink); margin-bottom: 13px; }
+.q-num { font-weight: 700; color: var(--blue); margin-right: 3px; }
+
+/* Dropdown */
+.select-wrap { position: relative; display: inline-block; min-width: 180px; }
+.select-wrap::after {
+  content: ''; position: absolute; right: 13px; top: 50%;
+  transform: translateY(-50%); width: 0; height: 0;
+  border-left: 5px solid transparent; border-right: 5px solid transparent;
+  border-top: 6px solid var(--muted); pointer-events: none; transition: border-top-color .2s;
+}
+.select-wrap select {
+  appearance: none; -webkit-appearance: none; width: 100%;
+  border: 2px solid var(--border); border-radius: 9px;
+  padding: 10px 42px 10px 14px;
+  font-size: 15px; font-family: 'Sarabun', sans-serif; font-weight: 600;
+  color: var(--muted); background: white; cursor: pointer; outline: none;
+  transition: border-color .2s, box-shadow .2s, color .15s, background .15s;
+}
+.select-wrap select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(29,95,168,.1); }
+.select-wrap select.is-yes { border-color: var(--green); color: var(--green); background: #f0faf4; }
+.select-wrap select.is-no  { border-color: var(--red);   color: var(--red);   background: #fdf1f1; }
+.select-wrap:has(select.is-yes)::after { border-top-color: var(--green); }
+.select-wrap:has(select.is-no)::after  { border-top-color: var(--red); }
+
+/* Detail */
+.detail-wrap {
+  overflow: hidden; max-height: 0; opacity: 0; margin-top: 0;
+  transition: max-height .35s ease, opacity .3s ease, margin-top .3s ease;
+}
+.detail-wrap.open { max-height: 200px; opacity: 1; margin-top: 12px; }
+.detail-label { font-size: 12px; color: var(--muted); font-weight: 600; margin-bottom: 5px; }
+.detail-wrap textarea {
+  width: 100%; border: 1.5px solid var(--border); border-radius: 9px;
+  padding: 10px 14px; font-size: 14px; font-family: 'Sarabun', sans-serif;
+  color: var(--ink); background: #fafbfc; resize: vertical; min-height: 72px; outline: none;
+  transition: border-color .2s;
+}
+.detail-wrap textarea:focus { border-color: var(--blue); }
+
+/* Free text */
+textarea.freetext {
+  width: 100%; border: 1.5px solid var(--border); border-radius: 9px;
+  padding: 11px 14px; font-size: 14px; font-family: 'Sarabun', sans-serif;
+  color: var(--ink); resize: vertical; min-height: 80px; outline: none;
+  transition: border-color .2s;
+}
+textarea.freetext:focus { border-color: var(--blue); }
+
+/* Validation */
+.err { font-size: 12px; color: var(--red); margin-top: 5px; display: none; }
+.field.error input { border-color: var(--red) !important; }
+.field.error .err { display: block; }
+.q-row.error { border-color: var(--red) !important; background: #fff8f8; }
+.q-row.error .err { display: block; }
+
+/* Submit */
+.submit-area {
+  background: white; border-radius: 0 0 16px 16px;
+  padding: 28px 40px; border-top: 2px solid var(--pale);
+}
+.submit-btn {
+  background: var(--steel); color: white; border: none; border-radius: 10px;
+  padding: 13px 42px; font-size: 16px; font-weight: 700;
+  font-family: 'Sarabun', sans-serif; cursor: pointer;
+  box-shadow: 0 4px 16px rgba(30,58,82,.22);
+  transition: background .2s, transform .15s;
+}
+.submit-btn:hover { background: #152b3e; transform: translateY(-2px); }
+
+/* Success */
+.success-screen {
+  display: none; background: white; border-radius: 0 0 16px 16px;
+  padding: 70px 40px; text-align: center;
+}
+.success-icon { font-size: 60px; margin-bottom: 20px; }
+.success-screen h2 {
+  font-family: 'Noto Serif Thai', serif;
+  font-size: 24px; font-weight: 700; color: var(--steel); margin-bottom: 10px;
+}
+.success-screen p { font-size: 15px; color: var(--muted); line-height: 1.9; }
+
+@media (max-width: 600px) {
+  .page { padding: 20px 12px 60px; }
+  .header, .card, .submit-area { padding-left: 20px; padding-right: 20px; }
+  .two-col { grid-template-columns: 1fr; }
+  .select-wrap { min-width: 140px; }
+  .header h1 { font-size: 18px; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="company-tag">ATTG Co., Ltd.</div>
+    <h1>แบบสำรวจผลกระทบสถานการณ์ความขัดแย้งตะวันออกกลาง<br>และการยืนยันความสามารถในการจัดส่งสินค้า</h1>
+    <div class="header-meta">
+      <span class="meta-chip">&#128197; วันที่ 19 มีนาคม 2569</span>
+      <span class="meta-chip urgent"><span class="dot"></span>กรุณาตอบกลับภายใน 20 มีนาคม 2569</span>
+    </div>
+  </div>
+
+  <div class="intro-bar">
+    เนื่องจากสถานการณ์ความขัดแย้งในตะวันออกกลาง (อิสราเอล-สหรัฐอเมริกากับอิหร่าน) ซึ่งอาจส่งผลกระทบต่อห่วงโซ่อุปทานในอุตสาหกรรมยานยนต์ บริษัทฯ ขอให้ท่านประเมินสถานการณ์ในระยะเวลา <strong>1-3 เดือนข้างหน้า</strong> และกรอกแบบสำรวจนี้ให้ครบถ้วน
+  </div>
+
+  <div class="note-bar">
+    &#9888;&#65039; หากท่านพบปัญหาในการจัดส่งสินค้า ให้รีบแจ้งแผนกจัดซื้อ-สยามเอทีทันที และจะทำการสำรวจทุกๆ สัปดาห์เมื่อพบว่ามีความเสี่ยงสูงขึ้นที่จะจัดส่งไม่ได้
+  </div>
+
+  <form id="form" novalidate>
+
+    <!-- Section 1 -->
+    <div class="card">
+      <div class="section-label">
+        <div class="section-num">1</div>
+        <div class="section-title">ข้อมูลผู้ตอบแบบสำรวจ</div>
+      </div>
+
+      <div class="field" id="f-company">
+        <label>ชื่อบริษัท <span class="req">*</span></label>
+        <input type="text" id="company" placeholder="กรอกชื่อบริษัท">
+        <div class="err">กรุณากรอกชื่อบริษัท</div>
+      </div>
+
+      <div class="field" id="f-name">
+        <label>ชื่อผู้ตอบแบบสำรวจ / ตำแหน่ง <span class="req">*</span></label>
+        <input type="text" id="resp-name" placeholder="เช่น สมชาย ใจดี / ผู้จัดการฝ่ายขาย">
+        <div class="err">กรุณากรอกชื่อและตำแหน่ง</div>
+      </div>
+
+      <div class="two-col">
+        <div class="field" id="f-email">
+          <label>อีเมล <span class="req">*</span></label>
+          <input type="email" id="resp-email" placeholder="example@company.com">
+          <div class="err">กรุณากรอกอีเมลให้ถูกต้อง</div>
+        </div>
+        <div class="field">
+          <label>โทรศัพท์</label>
+          <input type="tel" id="resp-phone" placeholder="0x-xxxx-xxxx">
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2 -->
+    <div class="card">
+      <div class="section-label">
+        <div class="section-num">2</div>
+        <div class="section-title">การยืนยันความสามารถในการจัดส่งสินค้า</div>
+      </div>
+
+      <!-- Q1 -->
+      <div class="q-row" id="r1">
+        <div class="q-text"><span class="q-num">1.</span> สามารถจัดส่งตาม Forecast ที่ได้รับได้ครบ 100% หรือไม่</div>
+        <div class="select-wrap">
+          <select id="q1" onchange="onSelect(this,'d1',['ไม่ได้'])">
+            <option value="">-- กรุณาเลือก --</option>
+            <option value="ได้">ได้</option>
+            <option value="ไม่ได้">ไม่ได้</option>
+          </select>
+        </div>
+        <div class="err">กรุณาเลือกคำตอบ</div>
+        <div class="detail-wrap" id="d1">
+          <div class="detail-label">รายละเอียด (กรณีตอบ ไม่ได้)</div>
+          <textarea placeholder="ระบุ Part No., ปริมาณที่ขาด, วันที่คาดว่าจะกระทบ..."></textarea>
+        </div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="q-row" id="r2">
+        <div class="q-text"><span class="q-num">2.</span> สามารถจัดส่งตาม PO หรือ PDS ที่เปิดอยู่ได้ทันกำหนดหรือไม่</div>
+        <div class="select-wrap">
+          <select id="q2" onchange="onSelect(this,'d2',['ไม่ได้'])">
+            <option value="">-- กรุณาเลือก --</option>
+            <option value="ได้">ได้</option>
+            <option value="ไม่ได้">ไม่ได้</option>
+          </select>
+        </div>
+        <div class="err">กรุณาเลือกคำตอบ</div>
+        <div class="detail-wrap" id="d2">
+          <div class="detail-label">รายละเอียด (กรณีตอบ ไม่ได้)</div>
+          <textarea placeholder="ระบุ PO/PDS ที่มีความเสี่ยง, วันกำหนดส่ง, สาเหตุ..."></textarea>
+        </div>
+      </div>
+
+      <!-- Q3 -->
+      <div class="q-row" id="r3">
+        <div class="q-text"><span class="q-num">3.</span> มี Part No. ใดที่มีความเสี่ยงขาดส่งหรือไม่ (ถ้ามี โปรดระบุ)</div>
+        <div class="select-wrap">
+          <select id="q3" onchange="onSelect(this,'d3',['มี'])">
+            <option value="">-- กรุณาเลือก --</option>
+            <option value="มี">มี</option>
+            <option value="ไม่มี">ไม่มี</option>
+          </select>
+        </div>
+        <div class="err">กรุณาเลือกคำตอบ</div>
+        <div class="detail-wrap" id="d3">
+          <div class="detail-label">โปรดระบุ Part No. ที่มีความเสี่ยง</div>
+          <textarea placeholder="Part No., ชื่อชิ้นส่วน, ปริมาณที่ขาด, วันที่คาดว่าจะเกิดปัญหา..."></textarea>
+        </div>
+      </div>
+
+      <!-- Q4 -->
+      <div class="q-row" id="r4">
+        <div class="q-text"><span class="q-num">4.</span> ท่านมีวัตถุดิบหรือวัสดุที่ต้องนำเข้าจากต่างประเทศ ที่มีผลกระทบในสถานการณ์นี้หรือไม่</div>
+        <div class="select-wrap">
+          <select id="q4" onchange="onSelect(this,'d4',['มี'])">
+            <option value="">-- กรุณาเลือก --</option>
+            <option value="มี">มี</option>
+            <option value="ไม่มี">ไม่มี</option>
+          </select>
+        </div>
+        <div class="err">กรุณาเลือกคำตอบ</div>
+        <div class="detail-wrap" id="d4">
+          <div class="detail-label">ถ้ามี ขอรายละเอียด</div>
+          <textarea placeholder="ชื่อวัตถุดิบ, แหล่งนำเข้า, ผลกระทบที่คาดว่าจะเกิดขึ้น..."></textarea>
+        </div>
+      </div>
+
+      <!-- Q5 -->
+      <div class="q-row">
+        <div class="q-text"><span class="q-num">5.</span> อื่น ๆ ที่ท่านมีความกังวลและอยากจะเสนอแนะ</div>
+        <textarea class="freetext" id="q5" placeholder="ข้อเสนอแนะ หรือแผนรับมือของท่าน..."></textarea>
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <div class="submit-area" id="submitArea">
+      <button type="submit" class="submit-btn">ส่งแบบสำรวจ</button>
+    </div>
+
+    <!-- Success -->
+    <div class="success-screen" id="success">
+      <div class="success-icon">&#9989;</div>
+      <h2>ขอบคุณสำหรับการตอบแบบสำรวจ</h2>
+      <p>ข้อมูลของท่านได้รับการบันทึกเรียบร้อยแล้ว<br>ทีมจัดซื้อจะติดต่อกลับหากต้องการข้อมูลเพิ่มเติม</p>
+    </div>
+
+  </form>
+</div>
+
+<script>
+function onSelect(sel, detailId, showWhen) {
+  var YES = ['ได้', 'มี'];
+  var NO  = ['ไม่ได้', 'ไม่มี'];
+  sel.classList.remove('is-yes', 'is-no');
+  if (YES.indexOf(sel.value) > -1) sel.classList.add('is-yes');
+  if (NO.indexOf(sel.value)  > -1) sel.classList.add('is-no');
+  var detail = document.getElementById(detailId);
+  if (showWhen.indexOf(sel.value) > -1) {
+    detail.classList.add('open');
+  } else {
+    detail.classList.remove('open');
+  }
+  sel.closest('.q-row').classList.remove('error');
+}
+
+document.getElementById('form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  var ok = true;
+
+  // Text fields
+  var textFields = [['company','f-company'], ['resp-name','f-name']];
+  textFields.forEach(function(pair) {
+    var el = document.getElementById(pair[0]);
+    var f  = document.getElementById(pair[1]);
+    if (!el.value.trim()) { f.classList.add('error'); ok = false; }
+    else f.classList.remove('error');
+  });
+
+  // Email
+  var em = document.getElementById('resp-email');
+  var fe = document.getElementById('f-email');
+  if (!/\S+@\S+\.\S+/.test(em.value)) { fe.classList.add('error'); ok = false; }
+  else fe.classList.remove('error');
+
+  // Dropdowns
+  ['q1','q2','q3','q4'].forEach(function(id) {
+    var sel = document.getElementById(id);
+    var num = id.replace('q','');
+    var row = document.getElementById('r' + num);
+    if (!sel.value) { row.classList.add('error'); ok = false; }
+    else row.classList.remove('error');
+  });
+
+  if (!ok) {
+    var firstErr = document.querySelector('.error');
+    if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  // Collect data
+  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxwnSn-XUTlqgKmC5TluCJl_ZXsG0FHceOCJolCWyZBo3zjGAve-qg9ngrZy9kX_C_K/exec';
+
+  var params = new URLSearchParams({
+    company:   document.getElementById('company').value,
+    name:      document.getElementById('resp-name').value,
+    email:     document.getElementById('resp-email').value,
+    phone:     document.getElementById('resp-phone').value,
+    q1:        document.getElementById('q1').value,
+    q1_detail: document.querySelector('#d1 textarea').value,
+    q2:        document.getElementById('q2').value,
+    q2_detail: document.querySelector('#d2 textarea').value,
+    q3:        document.getElementById('q3').value,
+    q3_detail: document.querySelector('#d3 textarea').value,
+    q4:        document.getElementById('q4').value,
+    q4_detail: document.querySelector('#d4 textarea').value,
+    q5:        document.getElementById('q5').value
+  });
+
+  // Disable button
+  var btn = document.querySelector('.submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'กำลังส่ง...';
+
+  // ส่งด้วย GET + query string (หลีกเลี่ยง CORS)
+  var img = new Image();
+  img.src = SCRIPT_URL + '?' + params.toString();
+  img.onload = img.onerror = function() {
+    document.querySelectorAll('.card, #submitArea').forEach(function(el) {
+      el.style.display = 'none';
+    });
+    var s = document.getElementById('success');
+    s.style.display = 'block';
+    s.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // Fallback: แสดง success หลัง 3 วินาทีไม่ว่ากรณีใด
+  setTimeout(function() {
+    if (btn.disabled) {
+      document.querySelectorAll('.card, #submitArea').forEach(function(el) {
+        el.style.display = 'none';
+      });
+      var s = document.getElementById('success');
+      s.style.display = 'block';
+      s.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, 3000);
+});
+
+document.querySelectorAll('input').forEach(function(el) {
+  el.addEventListener('input', function() {
+    var f = el.closest('.field');
+    if (f) f.classList.remove('error');
+  });
+});
+</script>
+</body>
+</html>
